@@ -40,7 +40,7 @@ pipeline {
 
         stage('Install dependencies') {
             steps {
-                container('node') {
+                container('node')
                 dir(PROJECT_DIR) {
                     sh 'npm ci'
                 }
