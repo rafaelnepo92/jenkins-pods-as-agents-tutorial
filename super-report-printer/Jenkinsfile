@@ -18,8 +18,7 @@ pipeline {
                     image: python:3.10-alpine3.16
                     command: ["sleep", "infinity"]
             '''
-    }
-
+        }
     }
 
     options {
@@ -32,40 +31,44 @@ pipeline {
         stage('Generate Report') {
             steps {
                 dir(PROJECT_DIR) {
-                container('python') {
+                    container('python') {
                     sh './report_generator.py'
+                    }
                 }
             }
         }
 
         stage('Install dependencies') {
             steps {
-                container('node')
                 dir(PROJECT_DIR) {
+                    container('node') {
                     sh 'npm ci'
+                    }
                 }
             }
         }
 
         stage('Build Typescript') {
             steps {
-                container('node')
                 dir(PROJECT_DIR) {
+                    container('node') {
                     sh 'npm run build'
+                    }
                 }
             }
         }
 
         stage('Build Image') {
             environment {
-                container('node')
                 DOCKER_BUILDKIT = "1"
             }
             steps {
                 dir(PROJECT_DIR) {
                     // Some of our agents don't have Docker, what do we do?
                     // Also, we are always tagging with the same tag! Help!
+                    container('node') {
                     sh 'docker build -t super-report-printer:v0.1.0 .'
+                    }
                 }
             }
         }
