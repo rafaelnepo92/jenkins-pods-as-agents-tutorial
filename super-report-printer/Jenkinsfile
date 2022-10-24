@@ -49,6 +49,7 @@ pipeline {
 
         stage('Build Typescript') {
             steps {
+                container('node')
                 dir(PROJECT_DIR) {
                     sh 'npm run build'
                 }
@@ -57,6 +58,7 @@ pipeline {
 
         stage('Build Image') {
             environment {
+                container('node')
                 DOCKER_BUILDKIT = "1"
             }
             steps {
