@@ -7,18 +7,19 @@ pipeline {
     // We should really use some specific agent, we are getting crashes on some agents without Node or Docker!
     agent {
         kubernetes {
-            defaultcontainer 'node'
+            defaultContainer 'rust'
             yaml '''
-            spec:
-              containers:
-                - name: node
-                  image: node:16.15-alpine3.16
-                  commando: ["sleep", "infinity"]
-                - name: python
-                  image: python:3.10-alpine3.16
-                  command: ["sleep", "infinity"]
-           '''               
-        }
+              spec:
+                containers:
+                  - name: rust
+                    image: rust:1.61-alpine3.15
+                    command: ["sleep", "infinity"]
+                  - name: node
+                    image: node:18.2.0-alpine3.15
+                    command: ["sleep", "infinity"]
+            '''
+    }
+
     }
 
     options {
