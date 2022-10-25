@@ -46,6 +46,7 @@ pipeline {
         stage('Install dependencies') {
             steps {
                 dir(PROJECT_DIR) {
+                    container('node') {
                     //if we are on alpine, we need to install musl-dev
                     sh 'apk add --no-cache musl-dev=1.2.2-r7'
                 }
