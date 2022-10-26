@@ -71,11 +71,11 @@ pipeline {
             steps {
                 dir(PROJECT_DIR) {  
                 container('kaniko') {
-                  sh """/kaniko/executor --context=. \\
+                  sh '''/kaniko/executor --context=. \\
                     --dockerfile=./Dockerfile \\
                     ${getKanikoDestinations()} \\
                     --no-push
-                  """
+                  '''
                 }
             }
         }
