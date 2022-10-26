@@ -69,7 +69,7 @@ pipeline {
                 DOCKER_BUILDKIT = "1"
             }
             steps {
-                dir(PROJECT_DIR) {  
+                dir(PROJECT_DIR) {
                     container('kaniko') {
                         script {
                           kaniko.buildNoPush imageName: 'rusty-report-printer',
