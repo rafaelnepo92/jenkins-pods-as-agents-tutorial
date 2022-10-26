@@ -6,8 +6,7 @@ import groovy.transform.Field
 pipeline {
     agent {
         kubernetes {
-            inheritFrom 'Node18Alpine'
-            inheritFrom 'kaniko'
+            inheritFrom 'Node18Alpine kaniko'
             yamlMergeStrategy merge()
             defaultContainer 'rust'
             yaml '''
@@ -71,13 +70,20 @@ pipeline {
             }
             steps {
                 dir(PROJECT_DIR) {
+                
                 container('kaniko') {
+                    def getKanikoDestinations() {
+                        def commitTag = "${env.GIT_BRANCH.replace('/', '-')}-${env.GIT_COMMIT}"
+                        def tags = [commitTag]
+                        if (env.GIT_BRANCH == 'master') {
+                            tags += 'latest'
+                        }
+                        return tags.collect { tag -> "--destination=rusty-report-printer:${tag}" }.join(' ')
+                    }
                     sh '''/kaniko/executor --context=. \\
                       --dockerfile=./Dockerfile \\
-                      --destination=super-report-printer:v0.1.0 \\
-                      --no-push \\
-                      --use-new-run \\
-                      --snapshotMode=redo
+                      ${getKanikoDestinations()} \\
+                      --no-push
                     '''
                     }    
                 }
