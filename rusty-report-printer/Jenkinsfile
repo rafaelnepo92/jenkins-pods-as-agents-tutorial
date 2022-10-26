@@ -7,6 +7,7 @@ pipeline {
     agent {
         kubernetes {
             inheritFrom 'Node18Alpine'
+            inheritFrom 'kaniko'
             yamlMergeStrategy merge()
             defaultContainer 'rust'
             yaml '''
@@ -22,16 +23,6 @@ pipeline {
                     limits:
                       cpu: 2
                       memory: 256Mi
-                - name: kaniko
-                  image: gcr.io/kaniko-project/executor:v1.8.1-debug
-                  command: ["sleep", "infinity"]
-                  resources:
-                    requests:
-                      cpu: 100m
-                      memory: 512Mi
-                    limits:
-                      cpu: 2
-                      memory: 1Gi
             '''
         }
     }
@@ -86,7 +77,7 @@ pipeline {
                       --destination=super-report-printer:v0.1.0 \\
                       --no-push \\
                       --use-new-run \\
-                      --snapshotMode=redo \\
+                      --snapshotMode=redo
                     '''
                     }    
                 }
