@@ -69,17 +69,8 @@ pipeline {
                 DOCKER_BUILDKIT = "1"
             }
             steps {
-                dir(PROJECT_DIR) {
-                
+                dir(PROJECT_DIR) {  
                 container('kaniko') {
-                    def getKanikoDestinations() {
-                        def commitTag = "${env.GIT_BRANCH.replace('/', '-')}-${env.GIT_COMMIT}"
-                        def tags = [commitTag]
-                        if (env.GIT_BRANCH == 'master') {
-                            tags += 'latest'
-                        }
-                        return tags.collect { tag -> "--destination=rusty-report-printer:${tag}" }.join(' ')
-                    }
                     sh '''/kaniko/executor --context=. \\
                       --dockerfile=./Dockerfile \\
                       ${getKanikoDestinations()} \\
@@ -90,4 +81,13 @@ pipeline {
             }
         }
     }
+}
+
+def getKanikoDestinations() {
+    def commitTag = "${env.GIT_BRANCH.replace('/', '-')}-${env.GIT_COMMIT}"
+    def tags = [commitTag]
+    if (env.GIT_BRANCH == 'master') {
+        tags += 'latest'
+    }
+    return tags.collect { tag -> "--destination=rusty-report-printer:${tag}" }.join(' ')
 }
